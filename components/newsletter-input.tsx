@@ -33,6 +33,7 @@ export default function NewsLetterInput() {
 		try {
 			const result = await subscribeToNewsletter(data.email);
 			
+			
 			if (result.success) {
 				toast.success(result.message);
 				form.reset();
@@ -48,7 +49,7 @@ export default function NewsLetterInput() {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 mx-auto space-y-6">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="w-full md:w-2/3 mx-auto space-y-6">
 				<FormField
 					control={form.control}
 					name="email"
@@ -62,7 +63,7 @@ export default function NewsLetterInput() {
 									{isLoading ? 'Inscription...' : 'Soumettre'}
 								</Button>
 							</div>
-							<FormDescription>
+							<FormDescription className='text-sm'>
 								Recevez nos updates et soyez le premier informé des le lancement.
 							</FormDescription>
 							<FormMessage />

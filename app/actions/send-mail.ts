@@ -19,7 +19,7 @@ export async function sendWelcomeEmail(to: string, unsubscribeUrl?: string) {
     }));
     
     await resend.emails.send({
-        from: 'Links by ReachDem <prelaunch@updates.reachdemm.cc>',
+        from: 'Links by ReachDem <prelaunch@updates.reachdem.cc>',
         to,
         subject: 'Bienvenue dans notre newsletter !',
         html: emailHtml,

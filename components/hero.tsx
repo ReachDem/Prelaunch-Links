@@ -11,8 +11,8 @@ import NewsLetterInput from "./newsletter-input";
 
 const Hero = () => {
   return (
-    <section className="bg-background relative h-screen w-screen py-32">
-      <div className="container relative z-20 flex items-center justify-center">
+    <section className="bg-background relative py-8">
+      <div className="container mx-auto relative z-20 flex items-center justify-center">
         <div className="bg-background flex w-fit flex-col items-center justify-center gap-4 pb-3 text-center">
           <Button
             variant="secondary"
@@ -53,7 +53,7 @@ const Hero = () => {
             Utilisez un raccourcisseur qui apprends de vos utilisateurs tout en
             respectant leur vie privée.
           </p>
-          <div className="gap-4 w-[80%]">
+          <div className="mt-8 lg:mt-4 md:gap-4 w-[80%]">
             <NewsLetterInput />
           </div>
         </div>

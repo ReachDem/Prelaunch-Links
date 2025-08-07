@@ -27,8 +27,8 @@ const NewsletterWelcome = ({ unsubscribeUrl }: NewsletterWelcomeProps) => {
           <Container className="bg-white max-w-[600px] mx-auto rounded-[8px] overflow-hidden">
             {/* Header */}
             <Section className="bg-black text-center py-[32px] px-[24px]">
-              <Heading className="text-orange-300 text-[28px] font-bold m-0">
-                Links By ReachDem
+              <Heading className="text-[18px] font-normal m-0">
+                Links by ReachDem
               </Heading>
             </Section>
 
