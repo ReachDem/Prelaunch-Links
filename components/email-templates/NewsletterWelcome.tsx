@@ -39,12 +39,12 @@ const NewsletterWelcome = ({ unsubscribeUrl }: NewsletterWelcomeProps) => {
               </Heading>
               
               <Text className="text-gray-700 text-[16px] leading-[24px] mb-[20px] mt-0">
-                Merci de vous être inscrit à notre newsletter ! Vous allez maintenant recevoir 
+                Merci de vous &ecirc;tre inscrit &agrave; notre newsletter ! Vous allez maintenant recevoir 
                 nos dernières actualités, conseils et nouveautés directement dans votre boîte mail.
               </Text>
 
               <Text className="text-gray-700 text-[16px] leading-[24px] mb-[20px] mt-0">
-                Restez connecté pour ne rien manquer de l'univers Links By ReachDem.
+                Restez connect&eacute; pour ne rien manquer de l&apos;univers Links By ReachDem.
               </Text>
 
               <Hr className="border-gray-200 border-solid my-[24px]" />

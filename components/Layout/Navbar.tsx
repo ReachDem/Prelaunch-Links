@@ -3,6 +3,7 @@
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,13 +17,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
-const NAV_LOGO = {
-  url: "https://www.shadcnblocks.com",
-  src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
-  alt: "logo",
-  title: "Shadcnblocks.com",
-};
+
 const NAV_ITEMS = [
   { name: "Accueil", link: "/" },
   { name: "Etudes de cas", link: "/casestudies" },
@@ -30,7 +35,17 @@ const NAV_ITEMS = [
 ];
 
 const Navbar = () => {
-  const [activeItem, setActiveItem] = useState(NAV_ITEMS[0].name);
+  const pathname = usePathname();
+  // Determine active nav item based on current pathname
+  const activeItem: string | null = React.useMemo(() => {
+    const matches = NAV_ITEMS.filter((item) => {
+      if (item.link === "/") return pathname === "/"; // Accueil uniquement sur la racine exacte
+      return pathname === item.link || pathname.startsWith(item.link + "/"); // match strict segment ou sous-route
+    });
+    if (matches.length === 0) return null;
+    // choisir le plus spécifique (lien le plus long)
+    return matches.sort((a, b) => b.link.length - a.link.length)[0].name;
+  }, [pathname]);
 
   const indicatorRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
@@ -47,13 +62,17 @@ const Navbar = () => {
 
         indicatorRef.current.style.width = `${itemRect.width}px`;
         indicatorRef.current.style.left = `${itemRect.left - menuRect.left}px`;
+      } else if (indicatorRef.current) {
+        // Masquer l'indicateur si aucune page active
+        indicatorRef.current.style.width = `0px`;
+        indicatorRef.current.style.left = `0px`;
       }
     };
     updateIndicator();
     window.addEventListener("resize", updateIndicator);
 
     return () => window.removeEventListener("resize", updateIndicator);
-  }, [activeItem]);
+  }, [activeItem, pathname]);
 
   return (
     <section className="fixed top-4 w-full px-4 md:px-26 z-21">
@@ -68,7 +87,6 @@ const Navbar = () => {
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     data-nav-item={item.name}
-                    onClick={() => setActiveItem(item.name)}
                     className={`relative cursor-pointer text-sm font-medium hover:bg-transparent ${
                       activeItem === item.name
                         ? "text-foreground"
@@ -83,18 +101,22 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </React.Fragment>
             ))}
+            {/* Feedback Dialog (desktop) */}
+            <NavigationMenuItem>
+              <FeedbackDialog />
+            </NavigationMenuItem>
             {/* Active Indicator */}
             <div
               ref={indicatorRef}
               className="absolute bottom-2 flex h-1 items-center justify-center px-2 transition-all duration-300"
             >
-              <div className="bg-foreground h-0.5 w-full rounded-t-none transition-all duration-300" />
+              <div className={`bg-foreground h-0.5 w-full rounded-t-none transition-all duration-300 ${!activeItem ? 'opacity-0' : 'opacity-100'}`} />
             </div>
           </NavigationMenuList>
         </NavigationMenu>
 
         {/* Mobile Menu Popover */}
-        <MobileNav activeItem={activeItem} setActiveItem={setActiveItem} />
+  <MobileNav activeItem={activeItem} />
       </nav>
     </section>
   );
@@ -121,13 +143,7 @@ const AnimatedHamburger = ({ isOpen }: { isOpen: boolean }) => {
   );
 };
 
-const MobileNav = ({
-  activeItem,
-  setActiveItem,
-}: {
-  activeItem: string;
-  setActiveItem: (item: string) => void;
-}) => {
+const MobileNav = ({ activeItem }: { activeItem: string | null }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -148,7 +164,6 @@ const MobileNav = ({
               <li key={idx}>
                 <Link
                   href={navItem.link}
-                  onClick={() => setActiveItem(navItem.name)}
                   className={`text-foreground flex items-center border-l-[3px] px-6 py-4 text-sm font-medium transition-all duration-75 ${
                     activeItem === navItem.name
                       ? "border-foreground text-foreground"
@@ -159,9 +174,86 @@ const MobileNav = ({
                 </Link>
               </li>
             ))}
+            <li className="px-6 pt-2">
+              <FeedbackDialog mobile />
+            </li>
           </ul>
         </PopoverContent>
       </Popover>
     </div>
+  );
+};
+
+/* Feedback dialog component reused on desktop & mobile */
+import { useFormStatus } from "react-dom";
+import { submitFeedback } from "@/app/actions/feedback";
+
+const FeedbackDialog = ({ mobile = false }: { mobile?: boolean }) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          variant={mobile ? "outline" : "outline"}
+          size={mobile ? "sm" : "sm"}
+          className={mobile ? "w-full" : ""}
+        >
+          Feedback
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Partagez votre expérience</DialogTitle>
+          <DialogDescription className="space-y-2 text-left">
+            <p>
+              Aidez-nous à améliorer la plateforme en partageant des détails sur :
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li><strong>Vos attentes</strong> (ce que vous aimeriez voir ou faire)</li>
+              <li><strong>Votre point de vue</strong> (avis général, suggestions, priorités)</li>
+            </ul>
+            <p className="text-muted-foreground text-xs">
+              Plus vous êtes précis, plus nous pouvons prioriser efficacement.
+            </p>
+          </DialogDescription>
+        </DialogHeader>
+  <form action={async (fd) => { await submitFeedback(fd); }} className="space-y-4">
+          <Textarea
+            id="feedback"
+            name="message"
+            required
+            placeholder="Ex: J'utilise actuellement..., je m'attendais à..., ce qui me manque..., ce que vous pourriez ajouter..."
+            aria-label="Envoyer un feedback"
+            className="min-h-40"
+          />
+          <div className="flex gap-2">
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Votre email (pour réponse)"
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <input
+              type="text"
+              name="name"
+              placeholder="Nom (optionnel)"
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+          <div className="flex justify-end">
+            <SubmitButton />
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" size="sm" disabled={pending}>
+      {pending ? "Envoi..." : "Envoyer"}
+    </Button>
   );
 };

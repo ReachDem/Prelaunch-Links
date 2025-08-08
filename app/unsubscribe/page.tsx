@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import { unsubscribeFromNewsletter } from '@/app/actions/unsubscribe';
 
-export default function UnsubscribePage() {
+function UnsubscribeForm() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isUnsubscribed, setIsUnsubscribed] = useState(false);
@@ -39,6 +39,7 @@ export default function UnsubscribePage() {
       }
     } catch (error) {
       toast.error('Une erreur est survenue lors du désabonnement');
+      console.error('Unsubscribe error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -115,5 +116,21 @@ export default function UnsubscribePage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function UnsubscribePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="w-full max-w-md">
+          <CardContent className="text-center py-8">
+            <p>Chargement...</p>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <UnsubscribeForm />
+    </Suspense>
   );
 }

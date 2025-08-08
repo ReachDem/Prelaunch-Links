@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormSchema, FormSchemaType } from "@/components/validations/newsletter";
 import { toast } from 'sonner';
@@ -41,7 +40,7 @@ export default function NewsLetterInput() {
 				toast.error(result.message);
 			}
 		} catch (error) {
-			toast.error('Une erreur est survenue lors de l\'inscription.');
+			toast.error(`Une erreur est survenue lors de l\'inscription. ${error}`)
 		} finally {
 			setIsLoading(false);
 		}

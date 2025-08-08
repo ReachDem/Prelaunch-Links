@@ -1,10 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import React from "react";
 
-import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { TextShimmer } from "./motion-primitives/text-shimmer";
 import { Button } from "@/components/ui/button";
 import NewsLetterInput from "./newsletter-input";
