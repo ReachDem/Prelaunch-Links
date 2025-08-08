@@ -8,12 +8,22 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: 'website'
-      // L image OG est automatiquement fournie par opengraph-image.ts
-    },
+  openGraph: {
+    title: "RCDM Ink - Prelaunch",
+    description: "Découvrez RCDM Ink - Solution innovante en prélancement",
+    type: "website",
+    locale: "fr_FR",
+    siteName: "RCDM Ink",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RCDM Ink - Aperçu",
+        type: "image/png"
+      }
+    ]
+  },
     twitter: {
       card: 'summary_large_image',
       title,
