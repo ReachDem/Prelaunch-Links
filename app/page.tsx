@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
   openGraph: {
     title: "RCDM Ink - Prelaunch",
-    description: "Découvrez RCDM Ink - Solution innovante en prélancement",
+    description: "Découvrez RCDM Ink (Links by ReachDem) - Optimised URL Shortener",
     type: "website",
     locale: "fr_FR",
     siteName: "RCDM Ink",
