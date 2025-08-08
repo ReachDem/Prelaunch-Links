@@ -1,21 +1,78 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function OGPreview() {
+  const [isLocalhost, setIsLocalhost] = useState(false)
+  const [isCheckingAccess, setIsCheckingAccess] = useState(true)
   const [path, setPath] = useState('/')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
   const [lastGenerated, setLastGenerated] = useState<string>('')
 
+  useEffect(() => {
+    // Vérifier si nous sommes en localhost
+    const checkLocalhost = () => {
+      const hostname = window.location.hostname
+      const isLocal = hostname === 'localhost' || 
+                     hostname === '127.0.0.1' || 
+                     hostname.includes('localhost') ||
+                     process.env.NODE_ENV === 'development'
+      setIsLocalhost(isLocal)
+      setIsCheckingAccess(false)
+    }
+
+    checkLocalhost()
+  }, [])
+
+  // Si nous ne sommes pas en localhost, afficher un message d'erreur
+  if (isCheckingAccess) {
+    return (
+      <div className="container mx-auto p-6 max-w-4xl">
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center">
+              <p>Vérification de l'accès...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!isLocalhost) {
+    return (
+      <div className="container mx-auto p-6 max-w-4xl">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">Accès Refusé</CardTitle>
+            <CardDescription>
+              Cette page n'est accessible qu'en environnement de développement local.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center space-y-4">
+              <p className="text-muted-foreground">
+                Pour des raisons de sécurité, cette page d'administration n'est disponible qu'en localhost.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Si vous êtes un développeur, accédez à cette page via votre environnement de développement local.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   const generatePreview = async () => {
-    setIsLoading(true)
+    setIsGenerating(true)
     const timestamp = Date.now()
-    const imageUrl = `/api/og-screenshot?path=${encodeURIComponent(path)}&t=${timestamp}`
+    const imageUrl = `/opengraph-image?t=${timestamp}`
     setLastGenerated(imageUrl)
-    setIsLoading(false)
+    setIsGenerating(false)
   }
 
   const downloadImage = () => {
@@ -46,9 +103,9 @@ export default function OGPreview() {
             />
             <Button 
               onClick={generatePreview} 
-              disabled={isLoading}
+              disabled={isGenerating}
             >
-              {isLoading ? 'Génération...' : 'Générer'}
+              {isGenerating ? 'Génération...' : 'Générer'}
             </Button>
           </div>
 
@@ -77,8 +134,9 @@ export default function OGPreview() {
 
               <div className="text-sm text-muted-foreground">
                 <p><strong>URL de l'image:</strong> {lastGenerated}</p>
-                <p><strong>Taille:</strong> 1920x1080 px</p>
+                <p><strong>Taille:</strong> 1200x630 px (format OG standard)</p>
                 <p><strong>Format:</strong> PNG</p>
+                <p><strong>Génération:</strong> Next.js ImageResponse (edge runtime)</p>
               </div>
             </div>
           )}
@@ -86,11 +144,19 @@ export default function OGPreview() {
           <div className="mt-8 p-4 bg-muted rounded-lg">
             <h3 className="font-semibold mb-2">Comment utiliser :</h3>
             <ol className="list-decimal list-inside space-y-1 text-sm">
-              <li>Entrez le chemin de la page (ex: <code>/about</code>, <code>/contact</code>)</li>
-              <li>Cliquez sur "Générer" pour créer la capture d'écran</li>
-              <li>L'image sera automatiquement utilisée pour les partages sociaux</li>
-              <li>Le cache est de 1h pour les navigateurs, 24h pour les CDN</li>
+              <li>L'image OG utilise directement votre composant Hero existant</li>
+              <li>Cliquez sur "Générer" pour voir l'aperçu de l'image</li>
+              <li>L'image est générée automatiquement par Next.js depuis /app/opengraph-image.tsx</li>
+              <li>Le contenu reflète fidèlement votre section hero avec toutes les animations</li>
+              <li>Format standard 1200x630px optimisé pour tous les réseaux sociaux</li>
             </ol>
+            
+            <div className="mt-4 p-3 bg-green-50 border-l-4 border-green-400 rounded">
+              <p className="text-sm text-green-800">
+                <strong>✨ Approche simplifiée :</strong> L'image OG utilise maintenant directement votre composant Hero - 
+                plus simple, plus maintenable et toujours synchronisé avec votre design !
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -1,14 +1,26 @@
 import { Hero } from '@/components/hero'
-import { generateOGMetadata } from '@/lib/og/metadata'
 import { Metadata } from 'next'
 import React from 'react'
 
 export async function generateMetadata(): Promise<Metadata> {
-  return generateOGMetadata({
-    title: "RCDM Ink - Page d'accueil",
-    description: "Découvrez RCDM Ink - Solution innovante en prélancement. Rejoignez-nous dès maintenant !",
-    path: "/",
-  })
+  const title = 'RCDM Ink – Ne racourcissez pas juste, optimisez vos liens.'
+  const description = 'Créez, mesurez et optimisez vos liens intelligemment tout en respectant la vie privée.'
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website'
+      // L image OG est automatiquement fournie par opengraph-image.ts
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description
+      // L image Twitter peut réutiliser la même (Next la réutilise si pas précisé)
+    }
+  }
 }
 
 export default function Home() {
