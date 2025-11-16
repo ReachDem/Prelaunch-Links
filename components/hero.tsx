@@ -22,12 +22,12 @@ const Hero = () => {
           <div className="relative flex max-w-4xl items-center justify-center text-center text-5xl font-medium tracking-tight md:text-7xl">
             <h1 className="relative z-10 tracking-tighter">
               <span className="text-gray-500 mr-3">
-                Ne <span className="font-light text-orange-400">racourcissez</span> pas juste,
+                Ne <span className="font-light text-orange-400">partagez</span> pas juste,
               </span>
               <TextShimmer
                 duration={2.}
                 className="[--base-color:var(--color-gray-800)] [--base-gradient-color:var(--color-gray-500)]"
-              > Optimisez</TextShimmer>{" "}
+              > Convertissez</TextShimmer>{" "}
               <motion.span
                 className="text-gray-500 hover:scale-100 hover:origin-left duration-75 cursor-pointer relative"
                 initial={{ "--underline-width": "0%" }}
@@ -40,7 +40,7 @@ const Hero = () => {
                   backgroundRepeat: 'no-repeat'
                 }}
               >
-                vos liens
+                avec vos liens
               </motion.span>
               <span>.</span>
             </h1>
