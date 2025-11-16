@@ -30,7 +30,6 @@ import { Textarea } from "@/components/ui/textarea";
 
 const NAV_ITEMS = [
   { name: "Accueil", link: "/" },
-  { name: "Etudes de cas", link: "/casestudies" },
   { name: "Contact", link: "/contact" },
 ];
 
